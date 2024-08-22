@@ -33,6 +33,11 @@ public class CategoryUseCase  implements ICategoryServicePort {
 
 
 
+
+
+
+
+
     private void validateCategory(Category category) {
         if (category.getName() == null || category.getName().trim().isEmpty()) {
             throw new GlobalCategoryException("Nombre no puede ser vacio");
@@ -52,6 +57,5 @@ public class CategoryUseCase  implements ICategoryServicePort {
         }
 
     }
-
 
 }
