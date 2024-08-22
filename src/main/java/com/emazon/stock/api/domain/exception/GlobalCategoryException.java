@@ -1,4 +1,4 @@
-package com.emazon.stock.api.infraestructure.exception;
+package com.emazon.stock.api.domain.exception;
 
 public class GlobalCategoryException extends RuntimeException{
 

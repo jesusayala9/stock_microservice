@@ -11,8 +11,6 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.*;
 
 class TestCategoryUseCase {
-
-
     @InjectMocks
     private CategoryUseCase categoryUseCase;
 
@@ -22,8 +20,6 @@ class TestCategoryUseCase {
     @BeforeEach
     void setUp() {
         MockitoAnnotations.openMocks(this);
-
-
     }
 
     @Test
@@ -42,7 +38,6 @@ class TestCategoryUseCase {
         assertEquals("Nombre no puede ser vacio", exception.getMessage());
         verify(categoryPersistencePort, never()).saveCategory(category);
     }
-
     @Test
     void ExceptionIfNameIsTooLong() {
         String longName = "Nombre extremadamente largo que excede los 50 caracteres permitidos";
@@ -53,7 +48,6 @@ class TestCategoryUseCase {
         assertEquals("El nombre es muy largo", exception.getMessage());
         verify(categoryPersistencePort, never()).saveCategory(category);
     }
-
     @Test
     void ExceptionIfDescriptionIsEmpty() {
         Category category = new Category(1L, "Nombre válido", "");
@@ -63,7 +57,6 @@ class TestCategoryUseCase {
         assertEquals("Descripcion no puede ser vacio", exception.getMessage());
         verify(categoryPersistencePort, never()).saveCategory(category);
     }
-
     @Test
     void ExceptionIfDescriptionIsTooLong() {
         String longDescription = "Descripción extremadamente larga que excede los 90 caracteres permitidos por el sistema para esta entidad.";
@@ -74,7 +67,6 @@ class TestCategoryUseCase {
         assertEquals("Descripcion es muy larga", exception.getMessage());
         verify(categoryPersistencePort, never()).saveCategory(category);
     }
-
     @Test
     void ExceptionIfCategoryAlreadyExists() {
         Category category = new Category(1L, "Electronica", "Productos electronicos");
