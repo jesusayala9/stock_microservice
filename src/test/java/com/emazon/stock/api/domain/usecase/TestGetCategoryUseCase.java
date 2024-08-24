@@ -1,26 +1,27 @@
 package com.emazon.stock.api.domain.usecase;
-
+import com.emazon.stock.api.domain.exception.GlobalCategoryException;
 import com.emazon.stock.api.domain.model.Category;
 import com.emazon.stock.api.domain.spi.ICategoryPersistencePort;
+import com.emazon.stock.api.domain.utils.PagedResult;
+import com.emazon.stock.api.domain.utils.Pagination;
+import com.emazon.stock.api.domain.utils.SortCriteria;
+import com.emazon.stock.api.domain.utils.SortDirection;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
-
-import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.Mockito.when;
+
+
 import static org.mockito.Mockito.*;
 
 class TestGetCategoryUseCase {
-
     @InjectMocks
     private CategoryUseCase categoryUseCase;
 
@@ -33,63 +34,44 @@ class TestGetCategoryUseCase {
     }
 
     @Test
-    void PagedCategories() {
+    void getAllCategoriesTest() {
+        // Arrange
+        Pagination pagination = new Pagination(0, 10);
+        SortCriteria sortCriteria = new SortCriteria("name", SortDirection.ASC);
+        List<Category> categories = new ArrayList<>();
+        categories.add(new Category(1L, "Electronics", "Electronic items"));
+        PagedResult<Category> pagedResult = new PagedResult<>(categories, categories.size(), 1);
 
-        Pageable pageable = PageRequest.of(0, 2, Sort.by(Sort.Direction.ASC, "name"));
-        List<Category> categories = Arrays.asList(
-                new Category(1L, "Automotriz", "Artículos para autos"),
-                new Category(2L, "Electrónica", "Productos electrónicos")
-        );
-        Page<Category> pagedCategories = new PageImpl<>(categories, pageable, categories.size());
+        when(categoryPersistencePort.getAllCategories(pagination, sortCriteria)).thenReturn(pagedResult);
 
-        when(categoryPersistencePort.getAllCategories(pageable)).thenReturn(pagedCategories);
+        // Act
+        PagedResult<Category> result = categoryUseCase.getAllCategories(pagination, sortCriteria);
 
-
-        Page<Category> result = categoryUseCase.getAllCategories(pageable);
-
-
-        assertEquals(2, result.getTotalElements());
-        assertEquals(1, result.getTotalPages());
-        assertEquals("Automotriz", result.getContent().get(0).getName());
-        verify(categoryPersistencePort, times(1)).getAllCategories(pageable);
+        // Assert
+        assertEquals(1, result.getTotalElements());
+        assertEquals("Electronics", result.getContent().get(0).getName());
+        verify(categoryPersistencePort, times(1)).getAllCategories(pagination, sortCriteria);
     }
 
     @Test
-    void SortedCategories() {
+    void getAllCategoriesEmptyTest() {
+        // Arrange
+        Pagination pagination = new Pagination(0, 10);
+        SortCriteria sortCriteria = new SortCriteria("name", SortDirection.ASC);
+        PagedResult<Category> pagedResult = new PagedResult<>(new ArrayList<>(), 0, 0);
 
-        Pageable pageable = PageRequest.of(0, 2, Sort.by(Sort.Direction.DESC, "name"));
-        List<Category> categories = Arrays.asList(
-                new Category(1L, "Electrónica", "Productos electrónicos"),
-                new Category(2L, "Automotriz", "Artículos para autos")
-        );
-        Page<Category> pagedCategories = new PageImpl<>(categories, pageable, categories.size());
+        when(categoryPersistencePort.getAllCategories(pagination, sortCriteria)).thenReturn(pagedResult);
 
-        when(categoryPersistencePort.getAllCategories(pageable)).thenReturn(pagedCategories);
+        // Act & Assert
+        GlobalCategoryException exception = assertThrows(GlobalCategoryException.class, () -> {
+            categoryUseCase.getAllCategories(pagination, sortCriteria);
+        });
 
-
-        Page<Category> result = categoryUseCase.getAllCategories(pageable);
-
-
-        assertEquals(2, result.getTotalElements());
-        assertEquals(1, result.getTotalPages());
-        assertEquals("Electrónica", result.getContent().get(0).getName());
-        verify(categoryPersistencePort, times(1)).getAllCategories(pageable);
+        assertEquals("No hay categorias", exception.getMessage());
+        verify(categoryPersistencePort, times(1)).getAllCategories(pagination, sortCriteria);
     }
 
-    @Test
-    void EmptyResult() {
-
-        Pageable pageable = PageRequest.of(0, 2, Sort.by(Sort.Direction.ASC, "name"));
-        Page<Category> pagedCategories = Page.empty(pageable);
-
-        when(categoryPersistencePort.getAllCategories(pageable)).thenReturn(pagedCategories);
 
 
-        Page<Category> result = categoryUseCase.getAllCategories(pageable);
-
-
-        assertEquals(0, result.getTotalElements());
-        assertEquals(0, result.getTotalPages());
-        verify(categoryPersistencePort, times(1)).getAllCategories(pageable);
-    }
 }
+
