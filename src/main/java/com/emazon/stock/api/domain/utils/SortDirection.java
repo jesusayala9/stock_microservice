@@ -1,2 +1,8 @@
-package com.emazon.stock.api.domain.utils;public class SortDirection {
+package com.emazon.stock.api.domain.utils;
+
+public enum SortDirection {
+
+    ASC, DESC;
+
+
 }

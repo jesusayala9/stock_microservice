@@ -4,11 +4,9 @@ import com.emazon.stock.api.domain.api.ICategoryServicePort;
 import com.emazon.stock.api.domain.exception.GlobalCategoryException;
 import com.emazon.stock.api.domain.model.Category;
 import com.emazon.stock.api.domain.spi.ICategoryPersistencePort;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-
-
-
+import com.emazon.stock.api.domain.utils.PagedResult;
+import com.emazon.stock.api.domain.utils.Pagination;
+import com.emazon.stock.api.domain.utils.SortCriteria;
 
 
 public class CategoryUseCase  implements ICategoryServicePort {
@@ -26,13 +24,15 @@ public class CategoryUseCase  implements ICategoryServicePort {
     }
 
     @Override
-    public Page<Category> getAllCategories(Pageable pageable) {
-        return categoryPersistencePort.getAllCategories(pageable);
+    public PagedResult<Category> getAllCategories(Pagination pagination, SortCriteria sortCriteria) {
+        PagedResult<Category> categoryPage = categoryPersistencePort.getAllCategories(pagination, sortCriteria);
+
+        if (categoryPage.getTotalElements() == 0) {
+            throw new GlobalCategoryException("No hay categorias");
+        }
+
+        return categoryPage;
     }
-
-
-
-
 
 
 
