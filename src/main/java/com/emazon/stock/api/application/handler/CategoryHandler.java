@@ -14,7 +14,7 @@ import com.emazon.stock.api.domain.utils.SortCriteria;
 import com.emazon.stock.api.domain.utils.SortDirection;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
+
 
 import org.springframework.stereotype.Service;
 
