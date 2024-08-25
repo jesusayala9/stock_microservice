@@ -1,6 +1,7 @@
 package com.emazon.stock.api.domain.usecase;
 import com.emazon.stock.api.domain.model.Category;
 import com.emazon.stock.api.domain.spi.ICategoryPersistencePort;
+import com.emazon.stock.api.infraestructure.exception.GlobalCategoryException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -36,7 +37,7 @@ class TestCategoryUseCase {
     @Test
     void ExceptionIfNameIsEmpty() {
         Category category = new Category(1L, "", "Descripción válida");
-        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> {
+        GlobalCategoryException exception = assertThrows(GlobalCategoryException.class, () -> {
             categoryUseCase.saveCategory(category);
         });
         assertEquals("Nombre no puede ser vacio", exception.getMessage());
@@ -47,7 +48,7 @@ class TestCategoryUseCase {
     void ExceptionIfNameIsTooLong() {
         String longName = "Nombre extremadamente largo que excede los 50 caracteres permitidos";
         Category category = new Category(1L, longName, "Descripción válida");
-        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> {
+        GlobalCategoryException exception = assertThrows(GlobalCategoryException.class, () -> {
             categoryUseCase.saveCategory(category);
         });
         assertEquals("El nombre es muy largo", exception.getMessage());
@@ -57,7 +58,7 @@ class TestCategoryUseCase {
     @Test
     void ExceptionIfDescriptionIsEmpty() {
         Category category = new Category(1L, "Nombre válido", "");
-        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> {
+        GlobalCategoryException exception = assertThrows(GlobalCategoryException.class, () -> {
             categoryUseCase.saveCategory(category);
         });
         assertEquals("Descripcion no puede ser vacio", exception.getMessage());
@@ -68,7 +69,7 @@ class TestCategoryUseCase {
     void ExceptionIfDescriptionIsTooLong() {
         String longDescription = "Descripción extremadamente larga que excede los 90 caracteres permitidos por el sistema para esta entidad.";
         Category category = new Category(1L, "Nombre válido", longDescription);
-        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> {
+        GlobalCategoryException exception = assertThrows(GlobalCategoryException.class, () -> {
             categoryUseCase.saveCategory(category);
         });
         assertEquals("Descripcion es muy larga", exception.getMessage());
@@ -79,7 +80,7 @@ class TestCategoryUseCase {
     void ExceptionIfCategoryAlreadyExists() {
         Category category = new Category(1L, "Electronica", "Productos electronicos");
         when(categoryPersistencePort.existsByName("Electronica")).thenReturn(true);
-        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> {
+        GlobalCategoryException exception = assertThrows(GlobalCategoryException.class, () -> {
             categoryUseCase.saveCategory(category);
         });
         assertEquals("Categoria ya existe", exception.getMessage());
