@@ -2,7 +2,7 @@ package com.emazon.stock.api.infraestructure.input.rest;
 
 
 import com.emazon.stock.api.application.dto.BrandRequest;
-import com.emazon.stock.api.application.dto.CategoryRequest;
+
 import com.emazon.stock.api.application.handler.IBrandHandler;
 import lombok.RequiredArgsConstructor;
 
