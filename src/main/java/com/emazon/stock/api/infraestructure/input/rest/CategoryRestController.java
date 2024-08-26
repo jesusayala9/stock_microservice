@@ -24,8 +24,6 @@ public class CategoryRestController  {
             @RequestParam int size,
             @RequestParam String sortBy,
             @RequestParam String direction) {
-
-        // Convertir dirección a mayúsculas antes de pasarla al handler
         PagedResult<CategoryResponse> pagedCategories = categoryHandler.getAllCategories(page, size, sortBy, direction.toUpperCase());
         return ResponseEntity.ok(pagedCategories);
     }

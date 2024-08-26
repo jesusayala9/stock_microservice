@@ -41,23 +41,13 @@ public class CategoryHandler implements ICategoryHandler{
 
     @Override
     public PagedResult<CategoryResponse> getAllCategories(int page, int size, String sortBy, String direction) {
-        // Crear objetos Pagination y SortCriteria
         Pagination pagination = new Pagination(page, size);
-
-        // Convertir la dirección de ordenación en un enum SortDirection
         SortDirection sortDirection = SortDirection.valueOf(direction.toUpperCase());
         SortCriteria sortCriteria = new SortCriteria(sortBy, sortDirection);
-
-        // Obtener el resultado paginado de categorías
         PagedResult<Category> categoryPagedResult = categoryServicePort.getAllCategories(pagination, sortCriteria);
-
-        // Convertir cada Category a CategoryResponse
         List<CategoryResponse> categoryResponses = categoryPagedResult.getContent()
                 .stream()
-                .map(categoryResponseMapper::toResponse)
-                .collect(Collectors.toList());
-
-        // Devolver el resultado paginado con las respuestas
+                .map(categoryResponseMapper::toResponse).toList();
         return new PagedResult<>(categoryResponses, categoryPagedResult.getTotalElements(), categoryPagedResult.getTotalPages());
     }
 
