@@ -1,7 +1,7 @@
 package com.emazon.stock.api.domain.usecase;
 
 
-import com.emazon.stock.api.domain.exception.GlobalBrandException;
+import com.emazon.stock.api.infraestructure.exception.GlobalBrandException;
 
 import com.emazon.stock.api.domain.model.Brand;
 

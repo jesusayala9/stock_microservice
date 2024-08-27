@@ -1,9 +1,7 @@
 package com.emazon.stock.api.domain.usecase;
 
-import com.emazon.stock.api.domain.exception.GlobalBrandException;
-import com.emazon.stock.api.domain.exception.GlobalCategoryException;
+import com.emazon.stock.api.infraestructure.exception.GlobalBrandException;
 import com.emazon.stock.api.domain.model.Brand;
-import com.emazon.stock.api.domain.model.Category;
 import com.emazon.stock.api.domain.spi.IBrandPersistencePort;
 
 import org.junit.jupiter.api.BeforeEach;

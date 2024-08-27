@@ -1,4 +1,4 @@
-package com.emazon.stock.api.domain.exception;
+package com.emazon.stock.api.infraestructure.exception;
 
 
 public class GlobalBrandException extends RuntimeException{

@@ -1,5 +1,5 @@
 package com.emazon.stock.api.domain.usecase;
-import com.emazon.stock.api.domain.exception.GlobalCategoryException;
+import com.emazon.stock.api.infraestructure.exception.GlobalCategoryException;
 import com.emazon.stock.api.domain.model.Category;
 import com.emazon.stock.api.domain.spi.ICategoryPersistencePort;
 import com.emazon.stock.api.domain.utils.PagedResult;
