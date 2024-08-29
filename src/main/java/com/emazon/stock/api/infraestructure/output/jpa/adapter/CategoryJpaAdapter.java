@@ -1,8 +1,6 @@
 package com.emazon.stock.api.infraestructure.output.jpa.adapter;
-
 import com.emazon.stock.api.domain.model.Category;
 import com.emazon.stock.api.domain.spi.ICategoryPersistencePort;
-
 import com.emazon.stock.api.infraestructure.output.jpa.mapper.CategoryEntityMapper;
 import com.emazon.stock.api.infraestructure.output.jpa.repository.ICategoryRepository;
 import lombok.RequiredArgsConstructor;
