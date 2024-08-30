@@ -8,13 +8,12 @@ import com.emazon.stock.api.application.mapper.CategoryRequestMapper;
 import com.emazon.stock.api.application.mapper.CategoryResponseMapper;
 import com.emazon.stock.api.domain.api.ICategoryServicePort;
 import com.emazon.stock.api.domain.model.Category;
-import com.emazon.stock.api.domain.utils.PagedResult;
-import com.emazon.stock.api.domain.utils.Pagination;
-import com.emazon.stock.api.domain.utils.SortCriteria;
-import com.emazon.stock.api.domain.utils.SortDirection;
+import com.emazon.stock.api.domain.utils.pagination.PagedResult;
+import com.emazon.stock.api.domain.utils.pagination.Pagination;
+import com.emazon.stock.api.domain.utils.pagination.SortCriteria;
+import com.emazon.stock.api.domain.utils.pagination.SortDirection;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
 
 import org.springframework.stereotype.Service;
 
