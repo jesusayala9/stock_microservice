@@ -8,18 +8,17 @@ import com.emazon.stock.api.application.mapper.CategoryRequestMapper;
 import com.emazon.stock.api.application.mapper.CategoryResponseMapper;
 import com.emazon.stock.api.domain.api.ICategoryServicePort;
 import com.emazon.stock.api.domain.model.Category;
-import com.emazon.stock.api.domain.utils.PagedResult;
-import com.emazon.stock.api.domain.utils.Pagination;
-import com.emazon.stock.api.domain.utils.SortCriteria;
-import com.emazon.stock.api.domain.utils.SortDirection;
+import com.emazon.stock.api.domain.utils.pagination.PagedResult;
+import com.emazon.stock.api.domain.utils.pagination.Pagination;
+import com.emazon.stock.api.domain.utils.pagination.SortCriteria;
+import com.emazon.stock.api.domain.utils.pagination.SortDirection;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
-
 
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.stream.Collectors;
+
 
 
 @Service
@@ -54,8 +53,7 @@ public class CategoryHandler implements ICategoryHandler{
         // Convertir cada Category a CategoryResponse
         List<CategoryResponse> categoryResponses = categoryPagedResult.getContent()
                 .stream()
-                .map(categoryResponseMapper::toResponse)
-                .collect(Collectors.toList());
+                .map(categoryResponseMapper::toResponse).toList();
 
         // Devolver el resultado paginado con las respuestas
         return new PagedResult<>(categoryResponses, categoryPagedResult.getTotalElements(), categoryPagedResult.getTotalPages());

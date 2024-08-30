@@ -4,9 +4,9 @@ import com.emazon.stock.api.domain.model.Category;
 import com.emazon.stock.api.domain.spi.ICategoryPersistencePort;
 
 
-import com.emazon.stock.api.domain.utils.PagedResult;
-import com.emazon.stock.api.domain.utils.Pagination;
-import com.emazon.stock.api.domain.utils.SortCriteria;
+import com.emazon.stock.api.domain.utils.pagination.PagedResult;
+import com.emazon.stock.api.domain.utils.pagination.Pagination;
+import com.emazon.stock.api.domain.utils.pagination.SortCriteria;
 import com.emazon.stock.api.infraestructure.output.jpa.entity.CategoryEntity;
 import com.emazon.stock.api.infraestructure.output.jpa.mapper.CategoryEntityMapper;
 import com.emazon.stock.api.infraestructure.output.jpa.repository.ICategoryRepository;
@@ -43,10 +43,8 @@ public class CategoryJpaAdapter implements ICategoryPersistencePort {
                 Sort.by(springDirection, sortCriteria.getSortBy()));
         Page<CategoryEntity> categoryEntities = categoryRepository.findAll(pageable);
         List<Category> categories = categoryEntities.map(categoryEntityMapper::toCategory).toList();
-
         return new PagedResult<>(categories, (int) categoryEntities.getTotalElements(), categoryEntities.getTotalPages());
     }
-
 
 }
 

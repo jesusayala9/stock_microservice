@@ -18,8 +18,6 @@ public class BrandHandler implements IBrandHandler{
     private final IBrandServicePort brandServicePort;
     private final BrandRequestMapper brandRequestMapper;
 
-    private final BrandResponseMapper brandResponseMapper;
-
 
     @Override
     public void saveBrand(BrandRequest brandRequest) {
