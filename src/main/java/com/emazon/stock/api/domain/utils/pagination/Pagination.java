@@ -1,4 +1,4 @@
-package com.emazon.stock.api.domain.utils;
+package com.emazon.stock.api.domain.utils.pagination;
 
 public class Pagination {
 

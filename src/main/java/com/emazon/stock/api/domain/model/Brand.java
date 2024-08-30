@@ -8,6 +8,15 @@ public class Brand{
 
     private String description;
 
+    public Brand() {
+
+    }
+
+    public Brand(String name, String description) {
+        this.name = name;
+        this.description = description;
+    }
+
 
     public Brand(Long id, String name, String description) {
         this.id = id;

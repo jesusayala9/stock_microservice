@@ -2,7 +2,8 @@ package com.emazon.stock.api.application.handler;
 
 import com.emazon.stock.api.application.dto.BrandRequest;
 import com.emazon.stock.api.application.dto.BrandResponse;
-import com.emazon.stock.api.domain.utils.PagedResult;
+import com.emazon.stock.api.application.dto.CategoryResponse;
+import com.emazon.stock.api.domain.utils.pagination.PagedResult;
 
 
 public interface IBrandHandler {
@@ -10,4 +11,6 @@ public interface IBrandHandler {
     void saveBrand(BrandRequest brandRequest);
 
     PagedResult<BrandResponse> getAllBrands(int page, int size, String sortBy, String direction);
+
+
 }

@@ -1,12 +1,14 @@
 package com.emazon.stock.api.domain.usecase;
-
 import com.emazon.stock.api.domain.api.ICategoryServicePort;
-import com.emazon.stock.api.infraestructure.exception.GlobalCategoryException;
+
+import com.emazon.stock.api.domain.exception.EntityAlreadyExistsException;
+import com.emazon.stock.api.domain.exception.PageException;
+
 import com.emazon.stock.api.domain.model.Category;
 import com.emazon.stock.api.domain.spi.ICategoryPersistencePort;
-import com.emazon.stock.api.domain.utils.PagedResult;
-import com.emazon.stock.api.domain.utils.Pagination;
-import com.emazon.stock.api.domain.utils.SortCriteria;
+import com.emazon.stock.api.domain.utils.pagination.PagedResult;
+import com.emazon.stock.api.domain.utils.pagination.Pagination;
+import com.emazon.stock.api.domain.utils.pagination.SortCriteria;
 
 
 public class CategoryUseCase  implements ICategoryServicePort {
@@ -19,43 +21,19 @@ public class CategoryUseCase  implements ICategoryServicePort {
 
     @Override
     public void saveCategory(Category category) {
-        validateCategory(category);
+        if (categoryPersistencePort.existsByName(category.getName())) {
+            throw new EntityAlreadyExistsException("Categoria");
+        }
         categoryPersistencePort.saveCategory(category);
     }
 
     @Override
     public PagedResult<Category> getAllCategories(Pagination pagination, SortCriteria sortCriteria) {
         PagedResult<Category> categoryPage = categoryPersistencePort.getAllCategories(pagination, sortCriteria);
-
         if (categoryPage.getTotalElements() == 0) {
-            throw new GlobalCategoryException("No hay categorias");
+            throw new PageException("Categorias");
         }
-
         return categoryPage;
-    }
-
-
-
-
-
-    private void validateCategory(Category category) {
-        if (category.getName() == null || category.getName().trim().isEmpty()) {
-            throw new GlobalCategoryException("Nombre no puede ser vacio");
-        }
-        if (category.getName().length() > 50) {
-            throw new GlobalCategoryException("El nombre es muy largo");
-        }
-        if (category.getDescription() == null || category.getDescription().trim().isEmpty()) {
-            throw new GlobalCategoryException("Descripcion no puede ser vacio");
-        }
-        if (category.getDescription().length() > 90) {
-            throw new GlobalCategoryException("Descripcion es muy larga");
-        }
-
-        if (categoryPersistencePort.existsByName(category.getName())) {
-            throw new GlobalCategoryException("Categoria ya existe");
-        }
-
     }
 
 }

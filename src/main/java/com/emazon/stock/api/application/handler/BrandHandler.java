@@ -1,14 +1,19 @@
 package com.emazon.stock.api.application.handler;
 import com.emazon.stock.api.application.dto.BrandRequest;
 import com.emazon.stock.api.application.dto.BrandResponse;
+import com.emazon.stock.api.application.dto.CategoryResponse;
 import com.emazon.stock.api.application.mapper.BrandRequestMapper;
+
 import com.emazon.stock.api.application.mapper.BrandResponseMapper;
+import com.emazon.stock.api.application.mapper.CategoryResponseMapper;
 import com.emazon.stock.api.domain.api.IBrandServicePort;
 import com.emazon.stock.api.domain.model.Brand;
-import com.emazon.stock.api.domain.utils.PagedResult;
-import com.emazon.stock.api.domain.utils.Pagination;
-import com.emazon.stock.api.domain.utils.SortCriteria;
-import com.emazon.stock.api.domain.utils.SortDirection;
+
+import com.emazon.stock.api.domain.model.Category;
+import com.emazon.stock.api.domain.utils.pagination.PagedResult;
+import com.emazon.stock.api.domain.utils.pagination.Pagination;
+import com.emazon.stock.api.domain.utils.pagination.SortCriteria;
+import com.emazon.stock.api.domain.utils.pagination.SortDirection;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -39,9 +44,12 @@ public class BrandHandler implements IBrandHandler{
         SortDirection sortDirection = SortDirection.valueOf(direction.toUpperCase());
         SortCriteria sortCriteria = new SortCriteria(sortBy, sortDirection);
         PagedResult<Brand> brandPagedResult = brandServicePort.getAllBrands(pagination, sortCriteria);
-        List<BrandResponse>brandResponses = brandPagedResult.getContent()
+        List<BrandResponse> brandResponses = brandPagedResult.getContent()
                 .stream()
                 .map(brandResponseMapper::toResponse).toList();
+
         return new PagedResult<>(brandResponses, brandPagedResult.getTotalElements(), brandPagedResult.getTotalPages());
     }
+
+
 }

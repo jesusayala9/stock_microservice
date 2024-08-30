@@ -1,13 +1,10 @@
 package com.emazon.stock.api.infraestructure.input.rest;
-
-
 import com.emazon.stock.api.application.dto.BrandRequest;
-
 import com.emazon.stock.api.application.dto.BrandResponse;
-
-
 import com.emazon.stock.api.application.handler.IBrandHandler;
-import com.emazon.stock.api.domain.utils.PagedResult;
+import com.emazon.stock.api.domain.utils.pagination.PagedResult;
+import jakarta.validation.Valid;
+
 import lombok.RequiredArgsConstructor;
 
 import org.springframework.http.HttpStatus;
@@ -35,9 +32,8 @@ public class BrandRestController {
     }
 
 
-
     @PostMapping("/save")
-    public ResponseEntity<Void> saveBrand(@RequestBody BrandRequest brandRequest) {
+    public ResponseEntity<Void> saveBrand(@Valid @RequestBody BrandRequest brandRequest) {
         brandHandler.saveBrand(brandRequest);
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
