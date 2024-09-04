@@ -83,7 +83,7 @@ class CategoryUseCaseTest {
         // Arrange
         CategoryUseCase target = new CategoryUseCase(categoryPersistencePortMock);
         Category category = new Category();
-        category.setName(""); // Set name to empty
+        category.setName("");
 
         // Act & Assert
         IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> {
@@ -113,8 +113,8 @@ class CategoryUseCaseTest {
 
 
         assertNotNull(result);
-        assertEquals(2, result.getTotalElements()); // Asegúrate de que este valor sea correcto
-        assertEquals(1, result.getTotalPages()); // También verifica este valor
+        assertEquals(2, result.getTotalElements());
+        assertEquals(1, result.getTotalPages());
         verify(categoryPersistencePortMock, times(1)).getAllCategories(pagination, sortCriteria);
     }
 
