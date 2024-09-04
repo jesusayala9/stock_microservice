@@ -11,6 +11,8 @@ public interface ICategoryPersistencePort {
     void saveCategory(Category category);
     boolean existsByName(String name);
 
+    Category getCategoryById(Long id);
+
     PagedResult<Category> getAllCategories(Pagination pagination, SortCriteria sortCriteria);
 
 }

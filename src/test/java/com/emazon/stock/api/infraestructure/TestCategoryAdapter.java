@@ -6,6 +6,7 @@ import com.emazon.stock.api.domain.utils.pagination.SortCriteria;
 import com.emazon.stock.api.domain.utils.pagination.SortDirection;
 import com.emazon.stock.api.infraestructure.output.jpa.adapter.CategoryJpaAdapter;
 import com.emazon.stock.api.infraestructure.output.jpa.entity.CategoryEntity;
+import com.emazon.stock.api.infraestructure.output.jpa.entity.ProductEntity;
 import com.emazon.stock.api.infraestructure.output.jpa.mapper.CategoryEntityMapper;
 import com.emazon.stock.api.infraestructure.output.jpa.repository.ICategoryRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -16,7 +17,10 @@ import org.mockito.MockitoAnnotations;
 import org.springframework.data.domain.*;
 
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
+
 import static org.mockito.ArgumentMatchers.any;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.verify;
@@ -42,10 +46,19 @@ class TestCategoryAdapter {
     @Test
     void saveCategory_ShouldSaveCategorySuccessfully() {
         Category category = new Category(1L, "Electronics", "All electronic items");
-        CategoryEntity categoryEntity = new CategoryEntity(1L, "Electronics", "All electronic items");
+
+        // Usar el constructor sin argumentos
+        CategoryEntity categoryEntity = new CategoryEntity();
+        categoryEntity.setId(1L);
+        categoryEntity.setName("Electronics");
+        categoryEntity.setDescription("All electronic items");
+        categoryEntity.setProducts(new HashSet<>());  // Asignar un conjunto vacío de productos
+
         when(categoryEntityMapper.toEntity(category)).thenReturn(categoryEntity);
         when(categoryRepository.save(categoryEntity)).thenReturn(categoryEntity);
+
         categoryJpaAdapter.saveCategory(category);
+
         verify(categoryRepository).save(categoryEntity);
     }
 
@@ -72,7 +85,12 @@ class TestCategoryAdapter {
         Pagination pagination = new Pagination(0, 1); // Page size 1
         SortCriteria sortCriteria = new SortCriteria("name", SortDirection.ASC);
 
-        CategoryEntity categoryEntity = new CategoryEntity(1L, "Electronics", "All electronic items");
+        // Set vacío para productos
+        Set<ProductEntity> products = new HashSet<>();
+
+        // Crear una CategoryEntity con el Set de productos
+        CategoryEntity categoryEntity = new CategoryEntity(1L, "Electronics", "All electronic items", products);
+
         List<CategoryEntity> categoryEntityList = List.of(categoryEntity);
         Page<CategoryEntity> categoryEntityPage = new PageImpl<>(categoryEntityList);
 

@@ -37,6 +37,13 @@ public class CategoryJpaAdapter implements ICategoryPersistencePort {
     }
 
     @Override
+    public Category getCategoryById(Long id) {
+        return categoryRepository.findById(id)
+                .map(categoryEntityMapper::toCategory)
+                .orElse(null);
+    }
+
+    @Override
     public PagedResult<Category> getAllCategories(Pagination pagination, SortCriteria sortCriteria) {
         Sort.Direction springDirection = SortConverter.convert(sortCriteria.getDirection());
         Pageable pageable = PageRequest.of(pagination.getPage(), pagination.getSize(),
