@@ -1,13 +1,11 @@
 package com.emazon.stock.api.infraestructure.output.jpa.adapter;
 import com.emazon.stock.api.domain.model.Brand;
-import com.emazon.stock.api.domain.model.Category;
 import com.emazon.stock.api.domain.spi.IBrandPersistencePort;
-
 import com.emazon.stock.api.domain.utils.pagination.PagedResult;
 import com.emazon.stock.api.domain.utils.pagination.Pagination;
 import com.emazon.stock.api.domain.utils.pagination.SortCriteria;
 import com.emazon.stock.api.infraestructure.output.jpa.entity.BrandEntity;
-import com.emazon.stock.api.infraestructure.output.jpa.entity.CategoryEntity;
+
 import com.emazon.stock.api.infraestructure.output.jpa.mapper.BrandEntityMapper;
 import com.emazon.stock.api.infraestructure.output.jpa.repository.IBrandRepository;
 

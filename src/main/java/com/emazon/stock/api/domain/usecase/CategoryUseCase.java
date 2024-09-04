@@ -6,6 +6,7 @@ import com.emazon.stock.api.domain.exception.PageException;
 
 import com.emazon.stock.api.domain.model.Category;
 import com.emazon.stock.api.domain.spi.ICategoryPersistencePort;
+import com.emazon.stock.api.domain.utils.CategoryConstants;
 import com.emazon.stock.api.domain.utils.pagination.PagedResult;
 import com.emazon.stock.api.domain.utils.pagination.Pagination;
 import com.emazon.stock.api.domain.utils.pagination.SortCriteria;
@@ -21,6 +22,9 @@ public class CategoryUseCase  implements ICategoryServicePort {
 
     @Override
     public void saveCategory(Category category) {
+        if (category.getName() == null || category.getName().trim().isEmpty()) {
+            throw new IllegalArgumentException(CategoryConstants.EMPTY_NAME_MESSAGE.getMessage());
+        }
         if (categoryPersistencePort.existsByName(category.getName())) {
             throw new EntityAlreadyExistsException("Categoria");
         }

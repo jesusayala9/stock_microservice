@@ -3,7 +3,8 @@ package com.emazon.stock.api.domain.utils;
 public enum CategoryConstants {
 
     ENTITY_ALREADY_EXISTS("Ya existe"),
-    NO_PAGES("No hay");
+    NO_PAGES("No hay"),
+    EMPTY_NAME_MESSAGE ("Nombre no puede ser vacio");
 
     private final String message;
 
