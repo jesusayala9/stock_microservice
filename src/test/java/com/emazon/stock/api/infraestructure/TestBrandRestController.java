@@ -71,8 +71,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
     @Test
     void getAllBrandsWhenExist() throws Exception {
         List<BrandResponse> brands = List.of(
-                new BrandResponse("mazda", "carros"),
-                new BrandResponse("yamaha", "motos")
+                new BrandResponse(1L,"mazda", "carros"),
+                new BrandResponse(2L,"yamaha", "motos")
         );
         PagedResult<BrandResponse> pagedResult = new PagedResult<>(brands, brands.size(), 10);
         when(brandHandler.getAllBrands(0, 10, "name", "ASC")).thenReturn(pagedResult);

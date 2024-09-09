@@ -6,6 +6,7 @@ import com.emazon.stock.api.domain.api.IBrandServicePort;
 import com.emazon.stock.api.domain.exception.EntityAlreadyExistsException;
 
 
+import com.emazon.stock.api.domain.exception.PageException;
 import com.emazon.stock.api.domain.model.Brand;
 
 import com.emazon.stock.api.domain.spi.IBrandPersistencePort;
@@ -33,7 +34,7 @@ public class BrandUseCase implements IBrandServicePort {
     public PagedResult<Brand> getAllBrands(Pagination pagination, SortCriteria sortCriteria) {
         PagedResult<Brand> brandPage = brandPersistencePort.getAllBrands(pagination, sortCriteria);
         if (brandPage.getTotalElements() == 0) {
-            throw new com.emazon.stock.api.domain.exception.PageException("Marcas");
+            throw new PageException("Marcas");
         }
         return brandPage;
     }
