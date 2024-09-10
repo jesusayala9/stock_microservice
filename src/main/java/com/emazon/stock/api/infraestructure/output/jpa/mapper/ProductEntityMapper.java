@@ -25,7 +25,6 @@ public interface ProductEntityMapper {
 
     @Named("idToCategory")
     default Set<CategoryEntity> idToCategory(List<Long> categoryIds) {
-
         return categoryIds.stream().map(id -> {
             CategoryEntity categoryEntity = new CategoryEntity();
             categoryEntity.setId(id);
