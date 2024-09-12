@@ -36,4 +36,7 @@ public interface ProductEntityMapper {
     default List<Long> categoryEntityListToLongList(Set<CategoryEntity> categories) {
         return categories.stream().map(CategoryEntity::getId).toList();
     }
+
+
+    List<Product> toProductList(List<ProductEntity> productEntities);
 }

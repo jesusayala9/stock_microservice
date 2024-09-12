@@ -27,13 +27,14 @@ public class ProductRestController {
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size,
             @RequestParam(defaultValue = "name") String sortBy,
-            @RequestParam(defaultValue = "ASC") String direction) {
+            @RequestParam(defaultValue = "ASC") String direction,
+            @RequestParam(required = false) String name,
+            @RequestParam(required = false) String brand,
+            @RequestParam(required = false) String categories) {
 
-        PagedResult<ProductResponse> products = productHandler.getAllBrands(page, size, sortBy, direction);
+        PagedResult<ProductResponse> products = productHandler.getAllProducts(page, size, sortBy, direction, name, brand, categories);
         return ResponseEntity.ok(products);
     }
-
-
 }
 
 

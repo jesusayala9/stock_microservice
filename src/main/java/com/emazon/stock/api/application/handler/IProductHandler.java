@@ -8,7 +8,18 @@ import com.emazon.stock.api.domain.utils.pagination.PagedResult;
 public interface IProductHandler {
 
     void saveProduct(ProductRequest productRequest);
-    PagedResult<ProductResponse> getAllBrands(int page, int size, String sortBy, String direction);
+    PagedResult<ProductResponse> getAllProducts(
+            int page,
+            int size,
+            String sortBy,
+            String direction,
+            String name,
+            String brand,
+            String categories
+    );
 
 
 }
+
+
+

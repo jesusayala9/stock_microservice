@@ -8,5 +8,11 @@ import com.emazon.stock.api.domain.utils.pagination.SortCriteria;
 public interface IProductServicePort {
     void saveProduct(Product product);
 
-    PagedResult<Product> getAllProducts(Pagination pagination, SortCriteria sortCriteria);
+    PagedResult<Product> getAllProducts(
+            Pagination pagination,
+            SortCriteria sortCriteria,
+            String name,
+            String brand,
+            String categories
+    );
 }

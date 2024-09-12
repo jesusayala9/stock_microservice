@@ -9,5 +9,11 @@ public interface IProductPersistencePort {
     void saveProduct(Product product);
     boolean existsByName(String name);
 
-    PagedResult<Product> getAllProducts(Pagination pagination, SortCriteria sortCriteria);
+    PagedResult<Product> getAllProducts(
+            Pagination pagination,
+            SortCriteria sortCriteria,
+            String name,
+            String brand,
+            String categories
+    );
 }
