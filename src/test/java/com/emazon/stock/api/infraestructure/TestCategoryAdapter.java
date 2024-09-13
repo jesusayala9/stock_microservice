@@ -52,7 +52,7 @@ class TestCategoryAdapter {
         categoryEntity.setId(1L);
         categoryEntity.setName("Electronics");
         categoryEntity.setDescription("All electronic items");
-        categoryEntity.setProducts(new HashSet<>());  // Asignar un conjunto vacío de productos
+        categoryEntity.setProducts(new HashSet<>());
 
         when(categoryEntityMapper.toEntity(category)).thenReturn(categoryEntity);
         when(categoryRepository.save(categoryEntity)).thenReturn(categoryEntity);
@@ -82,23 +82,15 @@ class TestCategoryAdapter {
 
     @Test
     void getAllCategoriesWhenExist() {
-        Pagination pagination = new Pagination(0, 1); // Page size 1
+        Pagination pagination = new Pagination(0, 1);
         SortCriteria sortCriteria = new SortCriteria("name", SortDirection.ASC);
-
-        // Set vacío para productos
         Set<ProductEntity> products = new HashSet<>();
-
-        // Crear una CategoryEntity con el Set de productos
         CategoryEntity categoryEntity = new CategoryEntity(1L, "Electronics", "All electronic items", products);
-
         List<CategoryEntity> categoryEntityList = List.of(categoryEntity);
         Page<CategoryEntity> categoryEntityPage = new PageImpl<>(categoryEntityList);
-
         when(categoryRepository.findAll(any(Pageable.class))).thenReturn(categoryEntityPage);
         when(categoryEntityMapper.toCategory(categoryEntity)).thenReturn(new Category(1L, "Electronics", "All electronic items"));
-
         PagedResult<Category> pagedResult = categoryJpaAdapter.getAllCategories(pagination, sortCriteria);
-
         assertEquals(1, pagedResult.getTotalPages(), "Expected total pages to be 1.");
         assertEquals(1, pagedResult.getTotalElements(), "Expected total elements to be 1.");
     }
@@ -107,14 +99,10 @@ class TestCategoryAdapter {
     void getAllCategoriesWhenNotExist() {
         Pagination pagination = new Pagination(0, 10);
         SortCriteria sortCriteria = new SortCriteria("name", SortDirection.ASC);
-
         List<CategoryEntity> categoryEntityList = Collections.emptyList();
         Page<CategoryEntity> categoryEntityPage = new PageImpl<>(categoryEntityList);
-
         when(categoryRepository.findAll(any(Pageable.class))).thenReturn(categoryEntityPage);
-
         PagedResult<Category> pagedResult = categoryJpaAdapter.getAllCategories(pagination, sortCriteria);
-
         assertEquals(0, pagedResult.getTotalPages(), "Expected total pages to be 0.");
         assertEquals(0, pagedResult.getTotalElements(), "Expected total elements to be 0.");
     }

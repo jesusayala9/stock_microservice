@@ -1,7 +1,5 @@
 package com.emazon.stock.api.application.dto;
 
-import com.emazon.stock.api.application.utils.ProductConstraints;
-import jakarta.validation.constraints.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;

@@ -10,8 +10,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/product")
 @RequiredArgsConstructor
+@RequestMapping("/product")
 public class ProductRestController {
 
     private final IProductHandler productHandler;
@@ -31,7 +31,6 @@ public class ProductRestController {
             @RequestParam(required = false) String name,
             @RequestParam(required = false) String brand,
             @RequestParam(required = false) String categories) {
-
         PagedResult<ProductResponse> products = productHandler.getAllProducts(page, size, sortBy, direction, name, brand, categories);
         return ResponseEntity.ok(products);
     }
