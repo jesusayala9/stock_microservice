@@ -1,11 +1,12 @@
 package com.emazon.stock.api.infraestructure;
-
 import com.emazon.stock.api.domain.model.Product;
 import com.emazon.stock.api.domain.utils.pagination.PagedResult;
 import com.emazon.stock.api.domain.utils.pagination.Pagination;
 import com.emazon.stock.api.domain.utils.pagination.SortCriteria;
 import com.emazon.stock.api.domain.utils.pagination.SortDirection;
 import com.emazon.stock.api.infraestructure.output.jpa.adapter.ProductJpaAdapter;
+import com.emazon.stock.api.infraestructure.output.jpa.entity.BrandEntity;
+import com.emazon.stock.api.infraestructure.output.jpa.entity.CategoryEntity;
 import com.emazon.stock.api.infraestructure.output.jpa.entity.ProductEntity;
 import com.emazon.stock.api.infraestructure.output.jpa.mapper.ProductEntityMapper;
 import com.emazon.stock.api.infraestructure.output.jpa.repository.IProductRepository;
@@ -13,13 +14,14 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.jpa.domain.Specification;
+import org.springframework.data.domain.*;
 
-import java.util.Collections;
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
+import static org.hibernate.validator.internal.util.Contracts.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.*;
@@ -72,53 +74,129 @@ class TestProductAdapter {
     }
 
     @Test
-    void getAllProductsTest() {
+    void getAllProductsSuccessfully() {
         // Arrange
         Pagination pagination = new Pagination(0, 10);
         SortCriteria sortCriteria = new SortCriteria("name", SortDirection.ASC);
-        List<ProductEntity> productEntities = Collections.singletonList(new ProductEntity());
-        Page<ProductEntity> pageResultMock = mock(Page.class);
+        Pageable pageable = PageRequest.of(pagination.getPage(), pagination.getSize(), Sort.by(Sort.Direction.ASC, "name"));
 
-        when(pageResultMock.getContent()).thenReturn(productEntities);
-        when(pageResultMock.getTotalElements()).thenReturn(1L);
-        when(pageResultMock.getSize()).thenReturn(10);
-        when(productRepositoryMock.findAll(any(Specification.class), any(PageRequest.class))).thenReturn(pageResultMock);
+        Set<CategoryEntity> categoryEntities = new HashSet<>();
+        categoryEntities.add(new CategoryEntity(1L, "Electronics"));
 
-        Product productMock = new Product();
-        when(productEntityMapperMock.toProduct(any(ProductEntity.class))).thenReturn(productMock);
+        BrandEntity brandEntity = new BrandEntity(1L, "Brand Name");
 
-        // Act
-        PagedResult<Product> result = productJpaAdapter.getAllProducts(pagination, sortCriteria, null, null, null);
+        List<ProductEntity> productEntities = new ArrayList<>();
+        productEntities.add(new ProductEntity(1L, "Laptop", "High performance laptop", 10, 1500.0, brandEntity, categoryEntities));
+        Page<ProductEntity> productPage = new PageImpl<>(productEntities, pageable, productEntities.size());
 
-        // Assert
-        assertEquals(1, result.getTotalPages());
+        List<Product> products = new ArrayList<>();
+        products.add(new Product(1L, "Laptop", "High performance laptop", 10, 1500.0, 1L, List.of(1L)));
+
+        when(productRepositoryMock.findAll(pageable)).thenReturn(productPage);
+        when(productEntityMapperMock.toProductList(productEntities)).thenReturn(products);
+
+        PagedResult<Product> result = productJpaAdapter.getAllProducts(pagination, sortCriteria);
+
+        assertNotNull(result);
         assertEquals(1, result.getTotalElements());
         assertEquals(1, result.getContent().size());
-        verify(productRepositoryMock).findAll(any(Specification.class), any(PageRequest.class));
-        verify(productEntityMapperMock).toProduct(any(ProductEntity.class));
+        assertEquals("Laptop", result.getContent().get(0).getName());
+
+        verify(productRepositoryMock).findAll(pageable);
+        verify(productEntityMapperMock).toProductList(productEntities);
     }
 
     @Test
-    void getAllProductsWithNameFilterTest() {
+    void getAllProducts_emptyPage() {
+
         Pagination pagination = new Pagination(0, 10);
         SortCriteria sortCriteria = new SortCriteria("name", SortDirection.ASC);
-        String name = "Product Name";
 
-        ProductEntity productEntityMock = new ProductEntity();
-        List<ProductEntity> productEntities = Collections.singletonList(productEntityMock);
-        Page<ProductEntity> pageResultMock = mock(Page.class);
+        Page<ProductEntity> emptyProductPage = new PageImpl<>(List.of());
 
-        when(pageResultMock.getContent()).thenReturn(productEntities);
-        when(pageResultMock.getTotalElements()).thenReturn(1L);
-        when(pageResultMock.getSize()).thenReturn(10);
-        when(productRepositoryMock.findAll(any(Specification.class), any(PageRequest.class))).thenReturn(pageResultMock);
+        when(productRepositoryMock.findAll(any(Pageable.class))).thenReturn(emptyProductPage);
+        when(productEntityMapperMock.toProductList(anyList())).thenReturn(List.of());
 
-        Product productMock = new Product();
-        when(productEntityMapperMock.toProduct(productEntityMock)).thenReturn(productMock);
+        PagedResult<Product> result = productJpaAdapter.getAllProducts(pagination, sortCriteria);
 
-        productJpaAdapter.getAllProducts(pagination, sortCriteria, name, null, null);
-
-        verify(productRepositoryMock).findAll(any(Specification.class), any(PageRequest.class));
-        verify(productEntityMapperMock).toProduct(productEntityMock);
+        assertNotNull(result);
+        assertEquals(0, result.getContent().size());
+        assertEquals(10, pagination.getSize());
+        verify(productRepositoryMock, times(1)).findAll(any(Pageable.class));
+        verify(productEntityMapperMock, times(1)).toProductList(anyList());
     }
+
+    @Test
+    void getAllProducts_sortByBrandName() {
+        // Arrange
+        Pagination pagination = new Pagination(0, 10);
+        SortCriteria sortCriteria = new SortCriteria("brandName", SortDirection.ASC);
+
+        ProductEntity productEntity = new ProductEntity(1L, "Product 1", "Description 1", 10, 100.0, new BrandEntity(), Set.of(new CategoryEntity()));
+        Page<ProductEntity> productPage = new PageImpl<>(List.of(productEntity));
+
+        when(productRepositoryMock.findAll(any(Pageable.class))).thenReturn(productPage);
+        when(productEntityMapperMock.toProductList(anyList())).thenReturn(List.of(new Product()));
+
+        PagedResult<Product> result = productJpaAdapter.getAllProducts(pagination, sortCriteria);
+
+        assertNotNull(result);
+        assertEquals(1, result.getContent().size());
+        assertEquals(10, pagination.getSize());
+        verify(productRepositoryMock, times(1)).findAll(any(Pageable.class));
+        verify(productEntityMapperMock, times(1)).toProductList(anyList());
+    }
+
+
+
+    @Test
+    void getAllProducts_sortByCategoryName() {
+
+        Pagination pagination = new Pagination(0, 10);
+        SortCriteria sortCriteria = new SortCriteria("categoryName", SortDirection.DESC);
+
+        ProductEntity productEntity = new ProductEntity(1L, "Product 1", "Description 1", 10, 100.0, new BrandEntity(), Set.of(new CategoryEntity()));
+        Page<ProductEntity> productPage = new PageImpl<>(List.of(productEntity));
+
+        when(productRepositoryMock.findAll(any(Pageable.class))).thenReturn(productPage);
+        when(productEntityMapperMock.toProductList(anyList())).thenReturn(List.of(new Product()));
+
+
+        PagedResult<Product> result = productJpaAdapter.getAllProducts(pagination, sortCriteria);
+
+
+        assertNotNull(result);
+        assertEquals(1, result.getContent().size());
+        assertEquals(10, pagination.getSize());
+        verify(productRepositoryMock, times(1)).findAll(any(Pageable.class));
+        verify(productEntityMapperMock, times(1)).toProductList(anyList());
+    }
+
+    @Test
+    void getAllProducts_sortByName() {
+
+        Pagination pagination = new Pagination(0, 10);
+        SortCriteria sortCriteria = new SortCriteria("name", SortDirection.ASC);
+
+        ProductEntity productEntity = new ProductEntity(1L, "Product 1", "Description 1", 10, 100.0, new BrandEntity(), Set.of(new CategoryEntity()));
+        Page<ProductEntity> productPage = new PageImpl<>(List.of(productEntity));
+
+
+        when(productRepositoryMock.findAll(any(Pageable.class))).thenReturn(productPage);
+        when(productEntityMapperMock.toProductList(anyList())).thenReturn(List.of(new Product()));
+
+
+        PagedResult<Product> result = productJpaAdapter.getAllProducts(pagination, sortCriteria);
+
+
+        assertNotNull(result);
+        assertEquals(1, result.getContent().size());
+        assertEquals(10, pagination.getSize());
+        verify(productRepositoryMock, times(1)).findAll(any(Pageable.class));
+        verify(productEntityMapperMock, times(1)).toProductList(anyList());
+    }
+
+
+
+
 }

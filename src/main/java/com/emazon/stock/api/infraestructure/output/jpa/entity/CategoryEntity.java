@@ -25,5 +25,10 @@ public class CategoryEntity {
     @ManyToMany(mappedBy = "categories", fetch = FetchType.EAGER)
     private Set<ProductEntity> products = new HashSet<>();
 
+    public CategoryEntity(Long id, String name) {
+        this.id = id;
+        this.name = name;
+    }
+
 
 }

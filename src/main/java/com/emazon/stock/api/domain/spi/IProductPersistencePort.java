@@ -11,9 +11,6 @@ public interface IProductPersistencePort {
 
     PagedResult<Product> getAllProducts(
             Pagination pagination,
-            SortCriteria sortCriteria,
-            String name,
-            String brand,
-            String categories
+            SortCriteria sortCriteria
     );
 }

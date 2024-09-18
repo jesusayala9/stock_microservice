@@ -2,7 +2,7 @@ package com.emazon.stock.api.application.handler;
 
 import com.emazon.stock.api.application.dto.BrandRequest;
 import com.emazon.stock.api.application.dto.BrandResponse;
-import com.emazon.stock.api.application.dto.CategoryResponse;
+
 import com.emazon.stock.api.domain.utils.pagination.PagedResult;
 
 

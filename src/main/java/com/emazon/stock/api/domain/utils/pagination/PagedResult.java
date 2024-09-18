@@ -10,7 +10,7 @@ public class PagedResult <T> {
     public PagedResult(List<T> content, int totalElements, int pageSize) {
         this.content = content;
         this.totalElements = totalElements;
-        this.totalPages = (int) Math.ceil((double) totalElements / pageSize);
+        this.totalPages = (totalElements == 0) ? 1 : (int) Math.ceil((double) totalElements / pageSize);
     }
 
     public List<T> getContent() {

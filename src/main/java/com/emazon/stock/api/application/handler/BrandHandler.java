@@ -1,15 +1,14 @@
 package com.emazon.stock.api.application.handler;
 import com.emazon.stock.api.application.dto.BrandRequest;
 import com.emazon.stock.api.application.dto.BrandResponse;
-import com.emazon.stock.api.application.dto.CategoryResponse;
+
 import com.emazon.stock.api.application.mapper.BrandRequestMapper;
 
 import com.emazon.stock.api.application.mapper.BrandResponseMapper;
-import com.emazon.stock.api.application.mapper.CategoryResponseMapper;
+
 import com.emazon.stock.api.domain.api.IBrandServicePort;
 import com.emazon.stock.api.domain.model.Brand;
 
-import com.emazon.stock.api.domain.model.Category;
 import com.emazon.stock.api.domain.utils.pagination.PagedResult;
 import com.emazon.stock.api.domain.utils.pagination.Pagination;
 import com.emazon.stock.api.domain.utils.pagination.SortCriteria;

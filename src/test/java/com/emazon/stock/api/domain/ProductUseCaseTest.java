@@ -13,7 +13,7 @@ import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
-import java.util.Collections;
+import java.util.ArrayList;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -80,40 +80,60 @@ class ProductUseCaseTest {
 
     @Test
     void getAllProductsSuccessfully() {
+
         Pagination pagination = new Pagination(0, 10);
         SortCriteria sortCriteria = new SortCriteria("name", SortDirection.ASC);
-        List<Product> products = Collections.nCopies(10, new Product());
-        PagedResult<Product> pagedResultMock = new PagedResult<>(products, 10, 10);
-        when(productPersistencePortMock.getAllProducts(pagination, sortCriteria, "name", "brand", "category"))
-                .thenReturn(pagedResultMock);
-        // Act
-        PagedResult<Product> result = productUseCase.getAllProducts(pagination, sortCriteria, "name", "brand", "category");
-        // Assert
+
+        List<Product> productList = new ArrayList<>();
+        productList.add(new Product(1L, "Laptop", "High performance laptop", 10, 1500.0, 1L, List.of(1L, 2L)));
+        PagedResult<Product> pagedResult = new PagedResult<>(productList, productList.size(), 1);
+
+        when(productPersistencePortMock.getAllProducts(pagination, sortCriteria)).thenReturn(pagedResult);
+
+        PagedResult<Product> result = productUseCase.getAllProducts(pagination, sortCriteria);
+
         assertNotNull(result);
         assertEquals(1, result.getTotalPages());
-        assertEquals(10, result.getTotalElements());
-        assertEquals(10, result.getContent().size());
-        verify(productPersistencePortMock).getAllProducts(pagination, sortCriteria, "name", "brand", "category");
-    }
+        assertEquals(1, result.getContent().size());
+        assertEquals("Laptop", result.getContent().get(0).getName());
 
+        verify(productPersistencePortMock).getAllProducts(pagination, sortCriteria);
+    }
     @Test
-    void getAllProductsPageExceptionWhenPageIsNegative() {
+    void getAllProductsThrowsPageException() {
         // Arrange
-        Pagination pagination = new Pagination(-1, 10);
+        Pagination pagination = new Pagination(2, 10);
         SortCriteria sortCriteria = new SortCriteria("name", SortDirection.ASC);
 
-        PagedResult<Product> pagedResultMock = new PagedResult<>(Collections.emptyList(), 1, 1);
-        when(productPersistencePortMock.getAllProducts(pagination, sortCriteria, null, null, null))
-                .thenReturn(pagedResultMock);
+        List<Product> productList = new ArrayList<>();
+        productList.add(new Product(1L, "Laptop", "High performance laptop", 10, 1500.0, 1L, List.of(1L, 2L)));
+        PagedResult<Product> pagedResult = new PagedResult<>(productList, productList.size(), 1);
+
+        when(productPersistencePortMock.getAllProducts(pagination, sortCriteria)).thenReturn(pagedResult);
+
         // Act & Assert
         PageException exception = assertThrows(PageException.class, () -> {
-            productUseCase.getAllProducts(pagination, sortCriteria, null, null, null);
+            productUseCase.getAllProducts(pagination, sortCriteria);
         });
 
         assertNotNull(exception);
-        assertTrue(exception.getMessage().contains("Producto"));
-        verify(productPersistencePortMock, times(1)).getAllProducts(pagination, sortCriteria, null, null, null);
+        assertEquals("No hay Producto", exception.getMessage());
+
+        verify(productPersistencePortMock).getAllProducts(pagination, sortCriteria);
     }
 
+    @Test
+    void getAllProductsWhenEmpty() {
+        Pagination pagination = new Pagination(0, 10);
+        SortCriteria sortCriteria = new SortCriteria("name", SortDirection.ASC);
+        List<Product> emptyProductList = new ArrayList<>();
+        PagedResult<Product> pagedResult = new PagedResult<>(emptyProductList, 0, 0);
+        when(productPersistencePortMock.getAllProducts(pagination, sortCriteria)).thenReturn(pagedResult);
+        PageException exception = assertThrows(PageException.class, () -> {
+            productUseCase.getAllProducts(pagination, sortCriteria);
+        });
+        assertEquals("No hay Producto", exception.getMessage());
+        verify(productPersistencePortMock).getAllProducts(pagination, sortCriteria);
+    }
 
 }

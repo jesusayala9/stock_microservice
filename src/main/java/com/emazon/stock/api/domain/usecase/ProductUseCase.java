@@ -23,31 +23,26 @@ public class ProductUseCase implements IProductServicePort {
         if (product.getName() == null || product.getName().trim().isEmpty()) {
             throw new IllegalArgumentException(ProductConstants.EMPTY_NAME_MESSAGE.getMessage());
         }
-        if(productPersistencePort.existsByName(product.getName())){
+        if (productPersistencePort.existsByName(product.getName())) {
             throw new EntityAlreadyExistsException("Producto");
         }
         productPersistencePort.saveProduct(product);
     }
 
     @Override
-    public PagedResult<Product> getAllProducts(
-            Pagination pagination,
-            SortCriteria sortCriteria,
-            String name,
-            String brand,
-            String categories
-    ) {
-        PagedResult<Product> pagedResult = productPersistencePort.getAllProducts(pagination, sortCriteria, name, brand, categories);
-
-        if (pagination.getPage() < 0 || pagination.getPage() >= pagedResult.getTotalPages()) {
+    public PagedResult<Product> getAllProducts(Pagination pagination, SortCriteria sortCriteria) {
+        PagedResult<Product> pagedResult = productPersistencePort.getAllProducts(pagination, sortCriteria);
+        if (pagedResult.getTotalPages() == 0 || pagination.getPage() < 0 || pagination.getPage() >= pagedResult.getTotalPages()) {
             throw new PageException("Producto");
         }
-
         return pagedResult;
     }
 
 
 
-
-
 }
+
+
+
+
+

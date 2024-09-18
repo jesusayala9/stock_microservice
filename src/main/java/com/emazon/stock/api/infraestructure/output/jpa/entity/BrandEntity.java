@@ -17,4 +17,9 @@ public class BrandEntity {
     private String name;
     @Column(nullable = false, length = 120 )
     private String description;
+
+    public BrandEntity(Long id, String name) {
+        this.id = id;
+        this.name = name;
+    }
 }

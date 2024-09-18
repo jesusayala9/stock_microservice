@@ -33,6 +33,8 @@ public class ProductEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     private BrandEntity brand;
 
+
+
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(
             name = "product_category",

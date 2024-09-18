@@ -14,13 +14,12 @@ import java.util.stream.Collectors;
 
 @Mapper(componentModel = "spring", uses = {BrandEntityMapper.class, CategoryEntityMapper.class})
 public interface ProductEntityMapper {
-
     @Mapping(source = "brandId", target = "brand", qualifiedByName = "idToBrand")
     @Mapping(source = "categoryIds", target = "categories", qualifiedByName = "idToCategory")
     ProductEntity toEntity(Product product);
 
     @Mapping(source = "brand.id", target = "brandId")
-    @Mapping(source = "categories", target = "categoryIds", qualifiedByName = "categoryEntityListToLongList")
+    @Mapping(source = "categories", target = "categoryIds", qualifiedByName = "categoryEntitySetToLongList")
     Product toProduct(ProductEntity productEntity);
 
     @Named("idToCategory")
@@ -32,11 +31,11 @@ public interface ProductEntityMapper {
         }).collect(Collectors.toSet());
     }
 
-    @Named("categoryEntityListToLongList")
-    default List<Long> categoryEntityListToLongList(Set<CategoryEntity> categories) {
+
+    @Named("categoryEntitySetToLongList")
+    default List<Long> categoryEntitySetToLongList(Set<CategoryEntity> categories) {
         return categories.stream().map(CategoryEntity::getId).toList();
     }
-
 
     List<Product> toProductList(List<ProductEntity> productEntities);
 }
